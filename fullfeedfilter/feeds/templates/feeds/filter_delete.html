@@ -1,0 +1,37 @@
+{% extends 'feeds/filter_base.html' %}
+
+{% block content %}
+    <div class="container col-12 col-md-6">
+        <div class="row mt-3 mb-2">
+            <div class="col">
+                <h4 class="">Confirm Delete</h4>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col">
+                <form action="" method="post">
+                    {% csrf_token %}
+                    <p>Are you sure you want to delete the following filter for the "<b>{{ feed.name }}</b>" feed?</p>
+                    <ul>
+                        <li><b>IF</b> <span class="badge badge-secondary">{{ filters.keyword }}</span> <span
+                            class="badge badge-secondary">{{ filters.condition }}</span> <span
+                            class="badge badge-secondary">{{ filters.source }}</span> <b>THEN</b>
+                        {% if filters.action == 'show' %}
+                            <span class="badge badge-success">{{ filters.action }}</span>
+                        {% else %}
+                            <span class="badge badge-danger">{{ filters.action }}</span>
+                        {% endif %}</li>
+                    </ul>
+                    <div class="row">
+                        <div class="col-auto mr-auto"></div>
+                        <div class="col-auto">
+                            <input type="submit" class="btn btn-danger" value="Delete"/>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+{% endblock content %}
+
+

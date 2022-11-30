@@ -1,0 +1,49 @@
+version: "3.9"
+
+x-logging: &v_logging
+  driver: json-file
+  options:
+    max-size: "10m"
+    max-file: "4"
+
+services:
+  duckdns:
+    image: lscr.io/linuxserver/duckdns:latest
+    container_name: duckdns
+    env_file:
+      - .env
+    environment:
+      - PUID=1000 #optional
+      - PGID=1000 #optional
+      - LOG_FILE=false #optional
+    # volumes:
+    #   - /path/to/appdata/config:/config #optional
+    restart: unless-stopped
+
+  # db:
+  #   image: postgres
+  #   volumes:
+  #     - ./data/db:/var/lib/postgresql/data
+  #   environment:
+  #     - POSTGRES_DB=postgres
+  #     - POSTGRES_USER=postgres
+  #     - POSTGRES_PASSWORD=postgres
+  fullfeedfilter:
+    container_name: fullfeedfilter
+    build:
+      context: .
+      # context: https://github.com/martokk/fullfeedfilter.git
+    # command: python manage.py runserver 0.0.0.0:8000
+    restart: unless-stopped
+    # depends_on:
+    #   - db
+    env_file:
+      - .env
+    # environment:
+    #   - POSTGRES_NAME=postgres
+    #   - POSTGRES_USER=postgres
+    #   - POSTGRES_PASSWORD=postgres
+    volumes:
+      - ./fullfeedfilter:/fullfeedfilter
+    ports:
+      - "8002:8002"

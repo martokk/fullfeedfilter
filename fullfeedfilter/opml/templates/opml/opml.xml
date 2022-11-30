@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<opml version="1.0">
+    <head>
+        <title>{{ title }}</title>
+    </head>
+    <body>
+        {% for folder, feeds in folders.items %}
+            {% if folder != "None" %}
+                <outline text="{{ folder }}" title="{{ folder }}">
+                    {% for feed in feeds %}
+                        <outline text="{{ feed.title }}" title="{{ feed.title }}" type="rss" xmlUrl="{{ feed.url }}" />
+                    {% endfor %}
+                </outline>
+            {% else %}
+                {% for feed in feeds %}<outline text="{{ feed.title }}" title="{{ feed.title }}" type="rss" xmlUrl="{{ feed.url }}" />
+                {% endfor %}
+            {% endif %}
+        {% endfor %}
+    </body>
+</opml>

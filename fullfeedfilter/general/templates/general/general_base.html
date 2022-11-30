@@ -1,0 +1,31 @@
+{% extends 'general/base.html' %}
+{% load crispy_forms_tags %}
+
+{% block content %}
+
+    <div class="row mt-3 mb-3">
+        <div class="col">
+            <div class="pb-0">
+                <h5 class="mb-0">
+                    {% block header %}
+                    {% endblock header %}
+                </h5>
+            </div>
+            <div class="pt-0">
+                <small>
+                    {% block sub_header %}
+                    {% endblock sub_header %}
+                </small>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col">
+            {% block general_content %}
+            {% endblock general_content %}
+        </div>
+    </div>
+
+{% endblock content %}
+

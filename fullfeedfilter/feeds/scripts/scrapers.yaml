@@ -1,0 +1,29 @@
+kenosha_news:
+  - url: "kenoshanews.com"
+    article: "div.asset-body"
+    article_stop: "gallery-vertical"
+    images: "div.main-content-wrap"
+    tags: "div.asset-tags"
+
+craigslist:
+  - url: "craigslist.org"
+    article: "section#postingbody"
+    images: "figure.iw"
+    additional_details: "p.attrgroup"
+    map: "div.mapbox"
+    remove: '<p class="print-qrcode-label">QR Code Link to This Post</p>'
+
+reddit:
+  - url: "reddit.com"
+    article: "selftext_html"
+    images: "url" # if image
+    media: "media" # Video
+    score: "score"
+    spoiler: "spoiler"
+    subreddit: "subreddit"
+    is_reddit_media_domain: "is_reddit_media_domain" # image
+    is_self: "is_self"
+    thumbnail: "thumbnail" # video
+    post_url: "url" # post, image, video
+    domain: "domain" #youtube
+    post_hint: "post_hint" #rich:video

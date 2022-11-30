@@ -1,0 +1,53 @@
+{% extends 'general/base.html' %}
+{% load crispy_forms_tags %}
+
+{% block content %}
+
+        <div class="row mb-3">
+            <div class="col mr-auto col-7">
+                <div class="pb-0">
+                    <h5 class="mb-0">
+                        {% block header %}
+                        {% endblock header %}
+                    </h5>
+                </div>
+                <div class="pt-0">
+                    <small>
+                        {% block sub_header %}
+                        {% endblock sub_header %}
+                    </small>
+                </div>
+            </div>
+            <div class="col ml-auto col-5 text-right">
+                {% block header_buttons %}
+                {% endblock header_buttons %}
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col">
+                {% block feed_content %}
+                {% endblock feed_content %}
+            </div>
+        </div>
+{% endblock content %}
+
+
+{# HEADER #}
+{#{% block header %}#}
+{#{% endblock header %}#}
+{##}
+{##}
+{# SUB HEADER #}
+{#{% block sub_header %}#}
+{#{% endblock sub_header %}#}
+{##}
+{##}
+{# HEADER BUTTONS #}
+{#{% block header_buttons %}#}
+{#{% endblock header_buttons %}#}
+{##}
+{##}
+{# FEED CONTENT #}
+{#{% block feed_content %}#}
+{#{% endblock feed_content %}#}

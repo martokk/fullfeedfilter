@@ -1,0 +1,24 @@
+{% extends 'feeds/filter_base.html' %}
+
+{# HEADER #}
+{% block header %}
+    Edit Filter
+{% endblock header %}
+
+
+{# SUB HEADER #}
+{% block sub_header %}
+    for <a href="{% url 'feed_view' feed.pk %}">{{ feed.name }}</a>
+{% endblock sub_header %}
+
+{# HEADER BUTTON #}
+{% block header_buttons %}
+    <a class="btn btn-danger btn-sm" href="{% url 'filter_delete' feed.pk object.pk%}" role="button">Delete Filter</a>
+{% endblock header_buttons %}
+
+
+{# FORM BUTTON #}
+{% block form_button %}
+    <input type="submit" class="btn btm-sm btn-warning" value="Update Filter"/>
+{% endblock form_button %}
+

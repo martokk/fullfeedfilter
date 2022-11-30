@@ -1,0 +1,62 @@
+# Git
+.git
+.gitignore
+.github
+
+# Docker
+.dockerignore
+
+# IDE
+.idea
+.vscode
+
+# Byte-compiled / optimized / DLL files
+__pycache__/
+**/__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+*.py[cod]
+*$py.class
+.pytest_cache/
+..mypy_cache/
+
+# poetry
+.venv
+
+# C extensions
+*.so
+
+# Virtual environment
+.venv
+venv
+
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
+
+# Swap files
+*.kate-swp
+*.*swp
+
+# Credentials
+.credentials
+
+# Linux & Windows Build/Dist
+build_linux/
+build_win/
+dist_linux/
+dist_win/
+
+.github/
+.mypy_cache/
+assets/
+notes/
+tests/
+.cruft.json
+.env
+db.sqlite3
+*.log
+fullfeedfilter/db.sqlite3

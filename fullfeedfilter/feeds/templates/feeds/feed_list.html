@@ -1,0 +1,72 @@
+{% extends 'feeds/feed_base.html' %}
+
+
+{# HEADER #}
+{% block header %}
+    Feeds ({{ object_list|length }})
+{% endblock header %}
+
+
+{# HEADER BUTTONS #}
+{% block header_buttons %}
+    <!--suppress ALL -->
+    <a class="btn btn-success btn-sm" href="{% url 'feed_add' %}" role="button">Add Feed</a>
+{% endblock header_buttons %}
+
+
+{# FEED CONTENT #}
+{% block feed_content %}
+    <table class="table table-hover table-sm">
+        <thead>
+        <tr>
+            <th scope="col" class="w-100">Feed</th>
+            {#                        <th scope="col" class="d-none d-md-table-cell w-25">Slug</th>#}
+            <th scope="col" class="w-auto"></th>
+        </tr>
+        </thead>
+        <tbody>
+
+        {% for feed in object_list %}
+            <tr>
+                <td class="{% if feed.pk in feed_validation_errors_list %}table-danger{% else %}{% endif %}">
+                    <a href="{% url 'feed_view' feed.pk %}" class="{% if feed.pk in feed_validation_errors_list %}text-danger{% else %}{% endif %}">{{ feed.name }}</a>
+                </td>
+
+                <td class="{% if feed.pk in feed_validation_errors_list %}table-danger{% else %}{% endif %}">
+                    <div class="btn-group">
+                        <button type="button"
+                                class="btn btn-sm {% if feed.pk in feed_validation_errors_list %}table-danger{% else %}btn-light{% endif %} btn-transparent dropdown-toggle "
+                                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        </button>
+                        <div class="dropdown-menu dropdown-menu-right p-0">
+                            <a class="dropdown-item" href="{% url 'feed_edit' feed.pk %}">Edit Feed</a>
+                            <a class="dropdown-item" href="{% url 'feed_delete' feed.pk %}">Delete
+                                Feed</a>
+                            <a class="dropdown-item" href="{% url 'feed_view' feed.pk %}">View
+                                Filters</a>
+                            <a class="dropdown-item" href="{% url 'filter_add' feed.pk %}">Add
+                                Filter</a>
+                            {#                            <a class="dropdown-item p-0" href="#">Filtered Preview</a>#}
+                            <a class="dropdown-item"
+                               href="{% url 'redirect_to_rss' feed.pk %}">RSS Feed
+                                (Shown)</a>
+                            <a class="dropdown-item" href="{% url 'feed_rebuild' feed.pk %}">Refresh
+                                Feed</a>
+                            <a class="dropdown-item" href="{% url 'feed_rebuild_full_articles' feed.pk %}">Rebuild Full
+                                Articles</a>
+                        </div>
+                    </div>
+
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+{% endblock feed_content %}
+
+
+
+
+
+

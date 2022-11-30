@@ -1,0 +1,13 @@
+{% load humanize %}
+<h1> <a href="{% url "view_feed_validation_errors" %}">ADMIN - {{ total_errors }} Feed Validation Errors</a></h1>
+<small> last run on {{ build_date }}</small>
+
+{% for record in feeds_errors %}
+    <h3><a href="{{ record.feed.url }}">{{ record.feed.name }} (ID={{ record.feed.id }})</a></h3>
+
+    {% for error in record.errors %}
+        <ul>
+            <li>{% if error.ignore %}<b>(SAFE TO IGNORE)</b> - {% endif %}{{ error.error }}{% if not error.ignore %}<b><a href="{% url 'ignore_feed_validation_errors' error.pk %}">IGNORE</a></b> - {% endif %}</li>
+        </ul>
+    {% endfor %}
+{% endfor %}

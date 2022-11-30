@@ -1,0 +1,23 @@
+{% extends 'general/general_base.html' %}
+{% load socialaccount %}
+{% load crispy_forms_tags %}
+
+
+{% block header %}
+    <h4>Home</h4>
+{% endblock header %}
+
+
+{% block sub_header %}
+{% endblock sub_header %}
+
+
+{% block general_content %}
+    {% if not request.user.is_authenticated %}
+        <div>
+            <a href="{% provider_login_url "google" %}" class="pull-right">Login with Google</a>
+        </div>
+    {% else %}
+    {% endif %}
+
+{% endblock general_content %}

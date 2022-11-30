@@ -1,0 +1,102 @@
+{% extends 'general/general_base.html' %}
+{% load humanize %}
+
+
+{# HEADER #}
+{% block header %}
+    {{ total_hidden }} Hidden Articles
+{% endblock header %}
+
+{% block sub_header %}
+    in the last {{ timedelta_hours }} hours.
+{% endblock sub_header %}
+
+{# CONTENT #}
+{% block general_content %}
+
+    <div class="dropdown float-right mb-2">
+        <button class="btn btn-sm btn-light dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown"
+                aria-haspopup="true" aria-expanded="false">
+            Last {{ timedelta_hours }} hours
+        </button>
+        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+            <a class="dropdown-item" href="{% url 'view_hidden_articles_timedelta_hours' 4 %}">4 hours</a>
+            <a class="dropdown-item" href="{% url 'view_hidden_articles_timedelta_hours' 8 %}">8 hours</a>
+            <a class="dropdown-item" href="{% url 'view_hidden_articles_timedelta_hours' 12 %}">12 hours</a>
+            <a class="dropdown-item" href="{% url 'view_hidden_articles_timedelta_hours' 24 %}">1 Day</a>
+            <a class="dropdown-item" href="{% url 'view_hidden_articles_timedelta_hours' 48 %}">2 Days</a>
+            <a class="dropdown-item" href="{% url 'view_hidden_articles_timedelta_hours' 96 %}">4 Days</a>
+            <a class="dropdown-item" href="{% url 'view_hidden_articles_timedelta_hours' 168 %}">7 Days</a>
+        </div>
+    </div>
+
+    <!-- Report Contents -->
+    {% for record in hidden_articles %}
+        <div class="panel-group">
+            <div class="panel panel-default">
+
+                <!-- Feed -->
+                <div id="feed-{{ record.feed.pk }}"
+                     class="list-group-item list-group-item-action list-group-item-{% if record.feed.report_hidden_articles %}secondary{% else %}dark{% endif %} d-flex justify-content-between align-items-center p-0 ">
+                    <a data-toggle="collapse" href="#articles-{{ record.feed.pk }}" class="flex-fill {% if record.feed.report_hidden_articles %}text-dark{% else %}text-muted{% endif %} p-2">
+                        <span class="flex-fill">{{ record.feed.name }}</span>
+                        <span class="badge badge-{% if record.feed.report_hidden_articles %}primary{% else %}secondary{% endif %} badge-pill float-right">{{ record.count }}</span>
+                    </a>
+                </div>
+
+                {% for article in record.articles %}
+                    <!-- Article -->
+                    <div id="articles-{{ record.feed.pk }}" class="panel-collapse collapse">
+                        <div class="list-group-item list-group-item-action d-flex justify-content-between align-items-center p-1 pl-3">
+                            <a data-toggle="collapse"
+                               href="#details-{{ record.feed.pk }}-{{ article.pk }}">{{ article.title |safe }}</a>
+                        </div>
+
+                        <!-- Article Details-->
+                        <div id="details-{{ record.feed.pk }}-{{ article.pk }}"
+                             class="list-group-item list-group-item-action collapse p-1 pl-4">
+                            <div class="row p-0 pl-4">
+                                <small>Article: <a href="{{ article.url }}">View Article</a></small>
+                            </div>
+                            <div class="row p-0 pl-4">
+                                <small>Filters: {{ article.hidden_active_keywords |safe }} </small>
+                            </div>
+                            {#                            <div class="row p-0 pl-4">#}
+                            {#                                <small><a data-toggle="collapse" href="#quick-filters-{{ record.feed.pk }}-{{ article.pk }}">Add Quick Filters</a></small>#}
+                            {#                            </div>#}
+                            {##}
+                            {#                            <!-- Quick Filters-->#}
+                            {#                            <div id="quick-filters-{{ record.feed.pk }}-{{ article.pk }}" class="collapse p-0">#}
+                            {#                                <div class="row p-0 pl-4">#}
+                            {#                                    <small>Title Keywords: <a href="#">XXXX</a>, <a href="#">XXXX</a>, <a#}
+                            {#                                            href="#">XXXX</a></small>#}
+                            {#                                </div>#}
+                            {#                                <div class="row p-0 pl-4">#}
+                            {#                                    <small>Other Keywords: <a href="#">XXXX</a>, <a href="#">XXXX</a>, <a#}
+                            {#                                            href="#">XXXX</a></small>#}
+                            {#                                </div>#}
+                            {#                            </div>#}
+                        </div>
+
+
+                    </div>
+                {% endfor %}
+
+            </div>
+        </div>
+
+    {% endfor %}
+
+    <script>$(document).ready(function () {
+        $('.panel-collapse').on('show.bs.collapse', function () {
+            $(this).siblings('.panel-heading').addClass('active');
+        });
+
+        $('.panel-collapse').on('hide.bs.collapse', function () {
+            $(this).siblings('.panel-heading').removeClass('active');
+        });
+    });
+    })
+    ;</script>
+
+{% endblock general_content %}

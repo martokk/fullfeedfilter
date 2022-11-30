@@ -1,0 +1,126 @@
+{% extends 'feeds/feed_base.html' %}
+
+{# HEADER #}
+{% block header %}
+    {{ feeds.name }}
+{% endblock header %}
+
+
+{# SUB HEADER #}
+{% block sub_header %}
+    <a href="{{ feeds.url }}">
+        {{ feeds.url }}
+    </a><br/>
+    <a href="{{ rss_url }}">
+        {{ rss_url }}
+    </a>
+{% endblock sub_header %}
+
+
+{# HEADER BUTTONS #}
+{% block header_buttons %}
+
+
+    <div class="btn-group">
+        <button type="button"
+                class="btn btn btn-secondary dropdown-toggle "
+                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+        </button>
+        <div class="dropdown-menu dropdown-menu-right p-0">
+            <a class="dropdown-item" href="{% url 'feed_edit' feeds.pk %}">Edit Feed</a>
+            <a class="dropdown-item" href="{% url 'feed_delete' feeds.pk %}">Delete
+                Feed</a>
+            {#                            <a class="dropdown-item p-0" href="#">Filtered Preview</a>#}
+            <a class="dropdown-item"
+               href="{% url 'redirect_to_rss' feeds.pk %}">RSS Feed
+                (Shown)</a>
+            <a class="dropdown-item" href="{% url 'feed_rebuild' feeds.pk %}">Refresh
+                Feed</a>
+            <a class="dropdown-item" href="{% url 'feed_rebuild_full_articles' feeds.pk %}">Rebuild Full Articles</a>
+        </div>
+    </div>
+
+{% endblock header_buttons %}
+
+
+{# FEED CONTENT #}
+{% block feed_content %}
+
+    {% if feed_validation_errors %}
+        <div class="alert alert-danger" role="alert">
+            <small><b>WARNING:<br> This feed is not a <a class="alert-link" href="https://validator.w3.org/feed/check.cgi?url={{ feeds.url |urlencode }}">W3C compliant</a> RSS feed.</b><br>
+                The following errors were found:</small>
+            <ul>
+                {%  for error in feed_validation_errors %}
+                    {{ error |safe}}
+                {%  endfor %}
+            </ul>
+        </div>
+    {% endif %}
+
+    <!-- Feed Filter Header -->
+    <div class="col-auto mr-auto mb-2 mt-3">
+        <div class="row">
+
+            <!-- Feed Filter Title -->
+            <div class="">
+                <h5 class="mb-0">Feed's Filters</h5>
+            </div>
+
+            <!-- Add Feed Filter Button -->
+            <div class="col-auto ml-auto align-self-center p-0">
+                <a class="btn btn-success btn-sm" href="{% url 'filter_add' feeds.pk %}" role="button">Add
+                    Filter</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Feed Filters Table -->
+    <table class="table table-hover table-sm">
+        <thead>
+        <tr>
+            <th scope="col" class="col">Filter</th>
+            <th scope="col" class="col"></th>
+        </tr>
+        </thead>
+        <tbody>
+
+        <!-- Filters Row -->
+        {% for filter in filters %}
+            <tr>
+                <td onclick="window.location='{% url 'filter_edit' feeds.pk filter.pk %}'" style="cursor:pointer;">
+
+                    <b>IF</b> <span class="badge badge-secondary">{{ filter.keyword }}</span> <span
+                        class="badge badge-secondary">{{ filter.condition }}</span> <span
+                        class="badge badge-secondary">{{ filter.source }}</span> <b>THEN</b>
+                    {% if filter.action == 'show' %}
+                        <span class="badge badge-success">{{ filter.action }}</span>
+                    {% else %}
+                        <span class="badge badge-danger">{{ filter.action }}</span>
+                    {% endif %}
+                </td>
+                <td>
+                    <div class="btn-group">
+                        <button type="button"
+                                class="btn btn-sm btn-light btn-transparent dropdown-toggle "
+                                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            {#                            <i class="fa" aria-hidden="true"></i>#}
+                        </button>
+                        <div class="dropdown-menu dropdown-menu-right p-0 pl-3">
+                            <a class="dropdown-item p-0" href="{% url 'filter_edit' feeds.pk filter.pk %}">Edit
+                                Filter</a>
+                            <a class="dropdown-item p-0" href="{% url 'filter_delete' feeds.pk filter.pk %}">Delete
+                                Filter</a>
+                        </div>
+                    </div>
+                </td>
+
+            </tr>
+        {% endfor %}
+
+        </tbody>
+    </table>
+
+{% endblock feed_content %}
+
+

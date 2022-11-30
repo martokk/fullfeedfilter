@@ -1,0 +1,32 @@
+{% extends 'feeds/feed_base.html' %}
+{% load crispy_forms_tags %}
+
+{# HEADER #}
+{% block header %}
+    Edit Feed
+{% endblock header %}
+
+
+{# HEADER BUTTONS #}
+{% block header_buttons %}
+    <a class="btn btn-danger btn-sm" href="{% url 'feed_delete' object.pk %}" role="button">
+        Delete Feed
+    </a>
+{% endblock header_buttons %}
+
+
+{# FEED CONTENT #}
+{% block feed_content %}
+    <form action="" method="post">
+        {% csrf_token %}
+        {{ form | crispy }}
+        <div class="row">
+            <div class="col-auto mr-auto"></div>
+            <div class="col-auto">
+                <input type="submit" class="btn btn-warning" value="Update"/>
+            </div>
+        </div>
+    </form>
+{% endblock feed_content %}
+
+

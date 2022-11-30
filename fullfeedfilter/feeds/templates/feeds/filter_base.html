@@ -1,0 +1,108 @@
+{% extends 'feeds/feed_base.html' %}
+{% load crispy_forms_tags %}
+{% load add_attr %}
+
+{% block feed_content %}
+    {% if form.errors %}
+        {% for field in form %}
+            {% for error in field.errors %}
+                <div class="alert alert-danger">
+                    <strong>{{ error|escape }}</strong>
+                </div>
+            {% endfor %}
+        {% endfor %}
+        {% for error in form.non_field_errors %}
+            <div class="alert alert-danger">
+                <strong>{{ error|escape }}</strong>
+            </div>
+        {% endfor %}
+    {% endif %}
+    <form action="" method="post">
+        {% csrf_token %}
+
+        <!-- Filter Cards -->
+        <div class="container p-0 col-12">
+            <div class="card-group">
+
+                <!-- "IF" Card -->
+                <div class="card">
+                    <div class="card-header pl-3 pb-0 pt-1">
+                        <h5><b>IF:</b></h5>
+                    </div>
+                    <div class="card-body p-2">
+
+                        <div class="container">
+                            <div class="row">
+                                <div class="col-5">Keyword:</div>
+                                <div class="col text-right pull-right">
+                                    <h5>{{ form.keyword|add_attr:'class=form-control' }}</h5></div>
+                            </div>
+                        </div>
+                        <div class="container">
+                            <div class="row">
+                                <div class="col-5">Condition:</div>
+                                <div class="col text-right"><h5>{{ form.condition|add_attr:'class=form-control' }}</h5>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="container">
+                            <div class="row">
+                                <div class="col-5">Source:</div>
+                                <div class="col text-right"><h5>{{ form.source|add_attr:'class=form-control' }}</h5>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- "THEN" Card -->
+                <div class="card">
+                    <div class="card-header pl-3 pb-0 pt-1">
+                        <h5><b>THEN:</b></h5>
+                    </div>
+                    <div class="card-body p-2">
+                        <div class="container">
+                            <div class="row">
+                                <div class="col-5">Action:</div>
+                                <div class="col text-right"><h5>{{ form.action|add_attr:'class=form-control' }}</h5>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- "Add Filter" Button -->
+        <div class="container">
+            <div class="row pt-1">
+                <div class="col text-right">
+                    {% block form_button %}
+                    {% endblock form_button %}
+                </div>
+            </div>
+        </div>
+    </form>
+{% endblock feed_content %}
+
+
+
+{# HEADER #}
+{#{% block header %}#}
+{#{% endblock header %}#}
+{##}
+{##}
+{# SUB HEADER #}
+{#{% block sub_header %}#}
+{#{% endblock sub_header %}#}
+{##}
+{##}
+{# HEADER BUTTONS #}
+{#{% block header_buttons %}#}
+{#{% endblock header_buttons %}#}
+{##}
+{##}
+{# FEED CONTENT #}
+{#{% block feed_content %}#}
+{#{% endblock feed_content %}#}

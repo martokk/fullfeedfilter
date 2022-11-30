@@ -1,0 +1,28 @@
+{
+  "template": "https://github.com/martokk/cookiecutter_python",
+  "commit": "af424a5d6e433c005cea44e37d4f50d89bac0755",
+  "checkout": null,
+  "context": {
+    "cookiecutter": {
+      "project_name": "fullfeedfilter",
+      "project_description": "A python project created by Martokk.",
+      "organization": "v3services",
+      "license": "MIT",
+      "_all_python_minor_version": [
+        10
+      ],
+      "minimal_python_version": "3.10",
+      "github_name": "martokk",
+      "email": "25113632+martokk@users.noreply.github.com",
+      "version": "0.1.0",
+      "line_length": "100",
+      "create_example_template": "none",
+      "create_dockerfile_template": "yes",
+      "_copy_without_render": [
+        "poetry.lock"
+      ],
+      "_template": "https://github.com/martokk/cookiecutter_python"
+    }
+  },
+  "directory": null
+}

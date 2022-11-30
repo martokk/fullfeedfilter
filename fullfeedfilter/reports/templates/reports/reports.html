@@ -1,0 +1,34 @@
+{% extends 'feeds/feed_base.html' %}
+
+
+{# HEADER #}
+{% block header %}
+    Special Reports
+{% endblock header %}
+
+
+
+{# CONTENT #}
+{% block feed_content %}
+
+    <!-- Hidden RSS Articles (past 8h) -->
+    <div class="mt-4">
+        <h5>Hidden Articles (past 8h)</h5>
+        <a href="{% url 'view_hidden_articles' %}">View Hidden Articles</a><br>
+        <a href="{% url 'redirect_to_hidden_articles_rss' request.user.username %}">Hidden Articles RSS Feed</a>
+    </div>
+
+    <!-- Invalid Feeds -->
+    <div class="mt-4">
+        <h5>Feed Validation Errors</h5>
+        <a href="{% url 'view_feed_validation_errors' %}">View Feed Validation Errors</a><br>
+        <a href="{% url 'redirect_to_feed_validation_errors_rss' %}">Feed Validation Errors RSS Feed</a>
+    </div>
+
+{% endblock feed_content %}
+
+
+
+
+
+

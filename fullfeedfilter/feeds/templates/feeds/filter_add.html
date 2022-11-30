@@ -1,0 +1,18 @@
+{% extends 'feeds/filter_base.html' %}
+
+{# HEADER #}
+{% block header %}
+    Add Filter
+{% endblock header %}
+
+
+{# SUB HEADER #}
+{% block sub_header %}
+    for <a href="{% url 'feed_view' feed.pk %}">{{ feed.name }}</a>
+{% endblock sub_header %}
+
+
+{# FORM BUTTON #}
+{% block form_button %}
+    <input type="submit" class="btn btm-sm btn-success" value="Add Filter"/>
+{% endblock form_button %}

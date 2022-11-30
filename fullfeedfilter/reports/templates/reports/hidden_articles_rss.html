@@ -1,0 +1,51 @@
+{% load humanize %}
+
+<!-- RSS Header -->
+<h3><a href="{% url 'view_hidden_articles' %}">FullFeedFilter - {{ total_hidden }} Hidden Articles</a></h3>
+<small> last run on {{ build_date }}</small>
+
+
+<!-- Feed -->
+{% for record in hidden_articles %}
+    <div style="margin-bottom: 3em;">
+        {% if record.feed.report_hidden_articles %}
+            <h3><a href="{% url 'view_hidden_articles_for_feed' record.feed.pk %}">{{ record.feed.name }}
+                ({{ record.count }})</a></h3>
+        {% else %}
+            <h4><a href="{% url 'view_hidden_articles_for_feed' record.feed.pk %}">{{ record.feed.name }}
+                ({{ record.count }})</a></h4>
+        {% endif %}
+
+
+
+        <!-- Article -->
+        {% for article in record.articles %}
+
+            <!-- Article Title -->
+            <div style="text-indent: -2em; padding-left: 2em;">
+                <b>
+                    <small>
+                        {% if record.feed.report_hidden_articles %}
+                            <a href="{{ article.url }}">{{ article.title |safe }}</a>
+                        {% else %}
+                            <small><a href="{{ article.url }}">{{ article.title |safe }}</a></small>
+                        {% endif %}
+                    </small>
+                </b>
+            </div>
+
+            {% if record.feed.report_hidden_articles %}
+                <!-- Article Tags -->
+                <div style="padding-left: 2em; padding-bottom: 0.25em;">
+                    <small>
+                        <small>{{ article.hidden_active_keywords |safe }}</small>
+                    </small>
+                </div>
+            {% endif %}
+
+        {% endfor %}
+
+
+    </div>
+    <hr>
+{% endfor %}

@@ -1,0 +1,25 @@
+{% extends 'feeds/feed_base.html' %}
+
+
+{# HEADER #}
+{% block header %}
+    Confirm Feed Deletion
+{% endblock header %}
+
+
+{# FEED CONTENT #}
+{% block feed_content %}
+    <form action="" method="post">
+        {% csrf_token %}
+        <p>Are you sure you want to delete the feed and filter settings for "<b>{{ object.name }}</b>"?</p>
+        <div class="row">
+            <div class="col-auto mr-auto"></div>
+            <div class="col-auto">
+                <input type="submit" class="btn btn-danger" value="Delete"/>
+            </div>
+        </div>
+    </form>
+{% endblock feed_content %}
+
+
+
