@@ -32,7 +32,10 @@ services:
       # - /home/ubuntu/volumes/fullfeedfilter/.env
       - ./fullfeedfilter/.env
     volumes:
-      # - /home/ubuntu/volumes/fullfeedfilter:/fullfeedfilter
+      # - /home/ubuntu/volumes/fullfeedfilter/.env:/fullfeedfilter/.env
+      # - /home/ubuntu/volumes/fullfeedfilter/media:/fullfeedfilter/media
+      # - /home/ubuntu/volumes/fullfeedfilter/logs:/fullfeedfilter/logs
+      # - /home/ubuntu/volumes/fullfeedfilter/db.sqlite3:/fullfeedfilter/db.sqlite3
       - ./fullfeedfilter:/fullfeedfilter
     ports:
       - "8002:8002"

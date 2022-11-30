@@ -1,4 +1,4 @@
-FROM python:3.10-slim-buster
+FROM python:3.10-slim-buster as build
 ENV PYTHONDONTWRITEBYTECODE=1 \
   PYTHONUNBUFFERED=1 \
   LANG=C.UTF-8 \
@@ -10,29 +10,32 @@ RUN apt-get update && \
   curl \
   && rm -rf /var/lib/apt/lists/*
 
-COPY pyproject.toml ./
-
 # Install Poetry
+COPY pyproject.toml ./
 RUN curl -sSL https://install.python-poetry.org | POETRY_HOME=/opt/poetry python && \
   cd /usr/local/bin && \
   ln -s /opt/poetry/bin/poetry && \
   poetry config virtualenvs.create false
 
-# Copy App Folder
-ADD /fullfeedfilter /fullfeedfilter
-WORKDIR /fullfeedfilter
-
 # Install App; Allow installing dev dependencies to run tests
+WORKDIR /fullfeedfilter
 ARG INSTALL_DEV=false
-RUN bash -c "if [ $INSTALL_DEV == 'true' ] ; then poetry install --no-root ; else poetry install --no-root --only main ; fi" && \
-  poetry run python -m nltk.downloader punkt
+RUN bash -c "if [ $INSTALL_DEV == 'true' ] ; then poetry install --no-root ; else poetry install --no-root --only main ; fi"
+RUN poetry run python -m nltk.downloader punkt brown maxent_treebank_pos_tagger movie_reviews wordnet stopwords
 
+
+
+
+
+
+
+FROM python:3.10-alpine  as main
+
+COPY --from=build /fullfeedfilter /fullfeedfilter
 
 # Start Entrypoint
 ENV DJANGO_SUPERUSER_PASSWORD:-"admin" \
   DJANGO_SUPERUSER_EMAIL:-"example@example.com" \
   DJANGO_SUPERUSER_USERNAME:-"admin"
 EXPOSE 8002
-RUN sed -i 's/\r$//' ./start.sh  && \  
-  chmod +x ./start.sh
 CMD ["/bin/sh", "-c", "./start.sh"]
