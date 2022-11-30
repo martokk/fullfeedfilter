@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 # Entrypoint script for Dockerfile
 
 poetry run python manage.py makemigrations --noinput

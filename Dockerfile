@@ -19,14 +19,12 @@ RUN curl -sSL https://install.python-poetry.org | POETRY_HOME=/opt/poetry python
   poetry config virtualenvs.create false
 
 # Copy App Folder
-COPY ./fullfeedfilter /fullfeedfilter
+ADD /fullfeedfilter /fullfeedfilter
 WORKDIR /fullfeedfilter
 
 # Install App; Allow installing dev dependencies to run tests
 ARG INSTALL_DEV=false
 RUN bash -c "if [ $INSTALL_DEV == 'true' ] ; then poetry install --no-root ; else poetry install --no-root --only main ; fi" && \
-  poetry run python manage.py makemigrations && \
-  poetry run python manage.py migrate --noinput && \
   poetry run python -m nltk.downloader punkt
 
 
@@ -35,4 +33,6 @@ ENV DJANGO_SUPERUSER_PASSWORD:-"admin" \
   DJANGO_SUPERUSER_EMAIL:-"example@example.com" \
   DJANGO_SUPERUSER_USERNAME:-"admin"
 EXPOSE 8002
-CMD ["sh", "start.sh"]
+RUN sed -i 's/\r$//' ./start.sh  && \  
+  chmod +x ./start.sh
+CMD ["/bin/sh", "-c", "./start.sh"]

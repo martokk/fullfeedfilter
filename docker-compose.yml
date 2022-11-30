@@ -11,7 +11,7 @@ services:
     image: lscr.io/linuxserver/duckdns:latest
     container_name: duckdns
     env_file:
-      - .env
+      - ./fullfeedfilter/.env
     environment:
       - PUID=1000 #optional
       - PGID=1000 #optional
@@ -20,30 +20,19 @@ services:
     #   - /path/to/appdata/config:/config #optional
     restart: unless-stopped
 
-  # db:
-  #   image: postgres
-  #   volumes:
-  #     - ./data/db:/var/lib/postgresql/data
-  #   environment:
-  #     - POSTGRES_DB=postgres
-  #     - POSTGRES_USER=postgres
-  #     - POSTGRES_PASSWORD=postgres
   fullfeedfilter:
     container_name: fullfeedfilter
     build:
       context: .
-      # context: https://github.com/martokk/fullfeedfilter.git
-    # command: python manage.py runserver 0.0.0.0:8000
+      # context: https://github.com/martokk/fullfeedfilter.git#main
     restart: unless-stopped
-    # depends_on:
-    #   - db
+    depends_on:
+      - duckdns
     env_file:
-      - .env
-    # environment:
-    #   - POSTGRES_NAME=postgres
-    #   - POSTGRES_USER=postgres
-    #   - POSTGRES_PASSWORD=postgres
+      # - /home/ubuntu/volumes/fullfeedfilter/.env
+      - ./fullfeedfilter/.env
     volumes:
+      # - /home/ubuntu/volumes/fullfeedfilter:/fullfeedfilter
       - ./fullfeedfilter:/fullfeedfilter
     ports:
       - "8002:8002"
