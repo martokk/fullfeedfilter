@@ -11,7 +11,6 @@ https://docs.djangoproject.com/en/2.2/ref/settings/
 """
 
 import os
-from pathlib import Path
 
 import environ
 
@@ -23,7 +22,7 @@ env = environ.Env(
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-DOMAIN = "0.0.0.0:8002"
+DOMAIN = env("DOMAIN")
 
 # reading .env file
 ENV_FILE = os.path.join(BASE_DIR, ".env")
