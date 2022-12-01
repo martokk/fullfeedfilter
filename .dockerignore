@@ -55,6 +55,8 @@ dist_win/
 assets/
 notes/
 tests/
+logs/
+debug.log
 .cruft.json
 .env
 db.sqlite3

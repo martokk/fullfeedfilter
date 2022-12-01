@@ -1,41 +1,99 @@
-FROM python:3.10-slim-buster as build
-ENV PYTHONDONTWRITEBYTECODE=1 \
-  PYTHONUNBUFFERED=1 \
-  LANG=C.UTF-8 \
-  LC_ALL=C.UTF-8 \
-  PATH="${PATH}:/root/.poetry/bin"
+# Dockerfile
+# Uses multi-stage builds requiring Docker 17.05 or higher
+# See https://docs.docker.com/develop/develop-images/multistage-build/
+# Template https://github.com/michaeloliverx/python-poetry-docker-example/blob/master/docker/Dockerfile
 
+
+# -----------------------------------------------------------------------------
+# PYTHON-BASE - A python base with shared environment variables
+FROM python:3.10-slim-buster as python-base
+ENV PYTHONUNBUFFERED=1 \
+  PYTHONDONTWRITEBYTECODE=1 \
+  PIP_NO_CACHE_DIR=off \
+  PIP_DISABLE_PIP_VERSION_CHECK=on \
+  PIP_DEFAULT_TIMEOUT=100 \
+  POETRY_HOME="/opt/poetry" \
+  POETRY_VIRTUALENVS_IN_PROJECT=true \
+  POETRY_NO_INTERACTION=1 \
+  PYSETUP_PATH="/opt/pysetup" \
+  VENV_PATH="/opt/pysetup/.venv" \
+  LANG=C.UTF-8 \
+  LC_ALL=C.UTF-8
+ENV PATH="$POETRY_HOME/bin:$VENV_PATH/bin:$PATH"
+
+
+# -----------------------------------------------------------------------------
+# BUILDER-BASE - builder-base is used to build dependencies
+FROM python-base as builder-base
 RUN apt-get update && \
   apt-get install -y --no-install-recommends \
   curl \
   && rm -rf /var/lib/apt/lists/*
 
-# Install Poetry
-COPY pyproject.toml ./
-RUN curl -sSL https://install.python-poetry.org | POETRY_HOME=/opt/poetry python && \
-  cd /usr/local/bin && \
-  ln -s /opt/poetry/bin/poetry && \
-  poetry config virtualenvs.create false
+# Install Poetry - respects $POETRY_VERSION & $POETRY_HOME
+ENV POETRY_VERSION=1.2.2
+RUN curl -sSL https://install.python-poetry.org | python
 
-# Install App; Allow installing dev dependencies to run tests
-WORKDIR /fullfeedfilter
-ARG INSTALL_DEV=false
-RUN bash -c "if [ $INSTALL_DEV == 'true' ] ; then poetry install --no-root ; else poetry install --no-root --only main ; fi"
+# We copy our Python requirements here to cache them and install only runtime deps using poetry
+WORKDIR $PYSETUP_PATH
+COPY ./poetry.lock ./pyproject.toml ./
+RUN poetry install --no-dev  # respects 
 RUN poetry run python -m nltk.downloader punkt brown maxent_treebank_pos_tagger movie_reviews wordnet stopwords
 
 
+# -----------------------------------------------------------------------------
+# BUILDER-BASE - installs all dev deps and can be used to develop code (example using docker-compose to mount local volume under /app)
+FROM python-base as development
 
+# Copying poetry and venv into image
+COPY --from=builder-base $POETRY_HOME $POETRY_HOME
+COPY --from=builder-base $PYSETUP_PATH $PYSETUP_PATH
 
+# Copying in our app
+ADD /fullfeedfilter /fullfeedfilter
+RUN chmod +x /fullfeedfilter/start.sh
 
+# venv already has runtime deps installed we get a quicker install
+WORKDIR $PYSETUP_PATH
+RUN poetry install
 
+WORKDIR /fullfeedfilter
+COPY . .
 
-FROM python:3.10-alpine  as main
-
-COPY --from=build /fullfeedfilter /fullfeedfilter
-
-# Start Entrypoint
 ENV DJANGO_SUPERUSER_PASSWORD:-"admin" \
   DJANGO_SUPERUSER_EMAIL:-"example@example.com" \
   DJANGO_SUPERUSER_USERNAME:-"admin"
 EXPOSE 8002
-CMD ["/bin/sh", "-c", "./start.sh"]
+ENTRYPOINT ["/bin/sh", "-c", "./start.sh"]
+
+
+# -----------------------------------------------------------------------------
+# LINT - 'lint' stage runs black and isort. Running in check mode means build will fail if any linting errors occur
+FROM development AS lint
+RUN black --config ./pyproject.toml --check app tests
+RUN isort --settings-path ./pyproject.toml --recursive --check-only
+CMD ["tail", "-f", "/dev/null"]
+
+
+# -----------------------------------------------------------------------------
+# TEST - 'test' stage runs our unit tests with pytest and coverage.  Build will fail if test coverage is under 95%
+FROM development AS test
+RUN coverage run --rcfile ./pyproject.toml -m pytest ./tests
+RUN coverage report --fail-under 95
+
+
+# -----------------------------------------------------------------------------
+# PRODUCTION - 'production' stage uses the clean 'python-base' stage and copyies in only our runtime deps that were installed in the 'builder-base'
+FROM python-base as production
+COPY --from=builder-base $VENV_PATH $VENV_PATH
+
+# Copying in our app
+ADD /fullfeedfilter /fullfeedfilter
+RUN chmod +x /fullfeedfilter/start.sh
+WORKDIR /fullfeedfilter
+
+ENV DJANGO_SUPERUSER_PASSWORD:-"admin" \
+  DJANGO_SUPERUSER_EMAIL:-"example@example.com" \
+  DJANGO_SUPERUSER_USERNAME:-"admin"
+EXPOSE 8002
+ENTRYPOINT ["/bin/sh", "-c", "./start.sh"]

@@ -1,11 +1,5 @@
 version: "3.9"
 
-x-logging: &v_logging
-  driver: json-file
-  options:
-    max-size: "10m"
-    max-file: "4"
-
 services:
   duckdns:
     image: lscr.io/linuxserver/duckdns:latest
@@ -22,9 +16,11 @@ services:
 
   fullfeedfilter:
     container_name: fullfeedfilter
+    image: fullfeedfilter
     build:
       context: .
       # context: https://github.com/martokk/fullfeedfilter.git#main
+      target: production
     restart: unless-stopped
     depends_on:
       - duckdns
