@@ -1,8 +1,8 @@
 #!/bin/sh
 # Entrypoint script for Dockerfile
 
-poetry run python manage.py makemigrations --noinput
-poetry run python manage.py migrate --noinput
+python manage.py makemigrations --noinput
+python manage.py migrate --noinput
 
 if [ "$DJANGO_SUPERUSER_USERNAME" ]; then
     python manage.py createsuperuser \
@@ -11,4 +11,4 @@ if [ "$DJANGO_SUPERUSER_USERNAME" ]; then
         --email $DJANGO_SUPERUSER_EMAIL
 fi
 
-poetry run ./manage.py runserver 0.0.0.0:8002
+python manage.py runserver 0.0.0.0:8002
